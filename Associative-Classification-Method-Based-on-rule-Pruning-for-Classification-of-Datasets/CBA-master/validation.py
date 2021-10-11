@@ -7,21 +7,6 @@ import time
 import random
 
 
-# calculate the error rate of the classifier on the dataset
-def get_error_rate(classifier, dataset):
-    size = len(dataset)
-    error_number = 0
-    for case in dataset:
-        is_satisfy_value = False
-        for rule in classifier.rule_list:
-            is_satisfy_value = is_satisfy(case, rule)
-            if is_satisfy_value == True:
-                break
-        if is_satisfy_value == False:
-            if classifier.default_class != case[-1]:
-                error_number += 1
-    return error_number / size
-
 def acc(apr,test):
     temp=[]
     actual=[x[-1] for x in test]
@@ -48,6 +33,7 @@ def acc(apr,test):
 
     res=count/len(test)
     return res
+
 # 10-fold cross-validations on CBA
 def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf=0.6):
     data, attributes, value_type = read(data_path, scheme_path)
@@ -95,13 +81,10 @@ def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf
         res=acc(classifier,test_dataset)
         acc_total+=res
 
-        error_rate = get_error_rate(classifier, test_dataset)
-        error_total_rate += error_rate
-
         total_car_number += len(cars.rules)
         total_classifier_rule_num += len(classifier.rule_list)
 
-        print("accuracy:",(res*100))
+        print("accuracy :",(res*100))
         print("No. of CARs : ",len(cars.rules))
         print("CBA-RG's run time : s" ,cba_rg_runtime)
         print("CBA-CB M1's run time :  s" ,cba_cb_runtime)

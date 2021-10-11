@@ -1,3 +1,4 @@
+
 import cba_rg
 from functools import cmp_to_key
 import sys
@@ -185,7 +186,6 @@ def classifier_builder_m1(cars, dataset):
     return classifier
 
 
-# just for test
 if __name__ == '__main__':
     dataset = [[1, 1, 1,2], [1, 1, 2,2], [2, 1, 2,1], [1, 2, 2,1], [3, 1, 1,1],
                [1, 1, 1,2], [2, 2, 3,1], [1, 2, 3,1], [1, 2, 2,1], [1, 2, 2,2]]

@@ -119,8 +119,8 @@ def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf
 # test entry goes here
 if __name__ == "__main__":
     # using the relative path, all data sets are stored in datasets directory
-    test_data_path = 'Dataset/ASD.data'
-    test_scheme_path = 'Dataset/ASD.names'
+    test_data_path = 'Dataset/iris.data'
+    test_scheme_path = 'Dataset/iris.names'
 
     # just choose one mode to experiment by removing one line comment and running
     min_support=0.2

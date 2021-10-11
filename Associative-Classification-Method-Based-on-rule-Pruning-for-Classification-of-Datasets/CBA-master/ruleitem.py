@@ -56,6 +56,9 @@ class RuleItem:
         condition_support_count = self.cond_sup_count
         rule_support_count = self.rule_sup_count
         initial_value = 0
+        if(condition_support_count == 0):
+            return 0
+            
         answer = rule_support_count / condition_support_count
 
         if(condition_support_count == initial_value):

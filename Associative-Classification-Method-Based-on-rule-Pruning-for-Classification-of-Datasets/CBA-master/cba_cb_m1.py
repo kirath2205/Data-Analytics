@@ -1,4 +1,3 @@
-
 import cba_rg
 from functools import cmp_to_key
 import sys
@@ -17,9 +16,7 @@ def is_satisfy(datacase, rule):
 
 
 class Classifier:
-    """
-    This class is our classifier. The rule_list and default_class are useful for outer code.
-    """
+
     def __init__(self):
         self.rule_list = list()
         self.default_class = None
@@ -99,16 +96,19 @@ def mergesort(arr):
         while i<len(left) and j<len(right):
             a=left[i]
             b=right[j]
-            if a.confidence < b.confidence:     # 1. the confidence of ri > rj
+            # 1. the confidence of ri > rj
+            if a.confidence < b.confidence:
                 arr[k]=right[j]
                 j+=1
 
             elif a.confidence == b.confidence:
-                if a.support < b.support:       # 2. their confidences are the same, but support of ri > rj
+                # 2. their confidences are the same, but support of ri > rj
+                if a.support < b.support:
                     arr[k]=right[j]
                     j+=1
                 elif a.support == b.support:
-                    if len(a.cond_set) < len(b.cond_set):   # 3. both confidence & support are the same, ri earlier than rj
+                    # 3. both confidence & support are the same, ri earlier than rj
+                    if len(a.cond_set) < len(b.cond_set):
                         arr[k]=right[j]
                         j+=1
                     else:
@@ -157,7 +157,7 @@ def classifier_builder_m1(cars, dataset):
     mergesort(rule_list)
 
     # rule_list.sort(key=cmp_to_key(rule_compare))
-    # cars_list = sort(rule_list=list(cars.rules))
+    
     cars_list=rule_list
 
     for rule in cars_list:

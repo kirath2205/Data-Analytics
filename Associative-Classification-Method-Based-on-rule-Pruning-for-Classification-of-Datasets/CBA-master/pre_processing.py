@@ -2,136 +2,201 @@
 import rmep
 
 
+
 def get_mode(arr):
     mode = []
-    arr_appear = dict((a, arr.count(a)) for a in arr)   # count appearance times of each key
-    if max(arr_appear.values()) == 1:       # if max time is 1
-        return      # no mode here
+    arr_appear = {}
+    for elem in arr:
+        arr_appear[elem] = arr.count(elem)  # count appearance times of each key
+    if max(arr_appear.values()) != 1:       # if max time is 1
+        for key in arr_appear.keys():     # else, mode is the number which has max time
+            if arr_appear[key] != max(arr_appear.values()):
+                continue
+            elif arr_appear[key] == max(arr_appear.values()):
+                mode.append(key)
     else:
-        for k, v in arr_appear.items():     # else, mode is the number which has max time
-            if v == max(arr_appear.values()):
-                mode.append(k)
+        return      # no mode here 
     return mode[0]  # return first number if has many modes
 
 
-# Fill missing values in column column_no, when missing values ration below 50%.
-# data: original data list
-# column_no: identify the column No. of that to be filled
+
 def fill_missing_values(data, column_no):
-    size = len(data)
-    column_data = [x[column_no] for x in data]      # get that column
-    while '?' in column_data:
-        column_data.remove('?')
+    size=0
+    for elem in data:
+        size+=1
+    column_data = []
+    for y in data:
+        column_data.append(y[column_no])
+    question_mark = '?'
+    while True:
+        if question_mark in column_data:
+            column_data.remove('?')
+        else:
+            break
     mode = get_mode(column_data)
-    for i in range(size):
-        if data[i][column_no] == '?':
-            data[i][column_no] = mode              # fill in mode
+    i=0
+    while i<size:
+        if data[i][column_no] != question_mark:
+            continue
+        else:
+            data[i][column_no] = mode
+        i+=1
     return data
 
 
-# Get the list needed by rmep.py, just glue the data column with class column.
-# data_column: the data column
-# class_column: the class label column
+
 def get_discretization_data(data_column, class_column):
-    size = len(data_column)
+    size=0
+    for elem in data_column:
+        size+=1
     result_list = []
-    for i in range(size):
+    i=0
+    while i<size:
         result_list.append([data_column[i], class_column[i]])
+        i+=1
     return result_list
 
 
-# Replace numerical data with the No. of interval, i.e. consecutive positive integers.
-# data: original data table
-# column_no: the column No. of that column
-# walls: the split point of the whole range
+
 def replace_numerical(data, column_no, walls):
-    size = len(data)
-    num_spilt_point = len(walls)
-    for i in range(size):
-        if data[i][column_no] > walls[num_spilt_point - 1]:
-            data[i][column_no] = num_spilt_point + 1
+    size=0
+    for elem in data:
+        size+=1
+    num_split_point=0
+    for wall in walls:
+        num_split_point+=1
+    i=0
+    while i<size:
+        if data[i][column_no] > walls[num_split_point - 1]:
+            data[i][column_no] = num_split_point + 1
+            i+=1
             continue
-        for j in range(0, num_spilt_point):
-            if data[i][column_no] <= walls[j]:
+        j=0
+        while j<num_split_point:
+            if data[i][column_no] > walls[j]:
+                pass
+            else:
                 data[i][column_no] = j + 1
                 break
+            j+=1
+        i+=1
     return data
 
 
-# Replace categorical values with a positive integer.
-# data: original data table
-# column_no: identify which column to be processed
+
 def replace_categorical(data, column_no):
-    size = len(data)
-    classes = set([x[column_no] for x in data])
-    classes_no = dict([(label, 0) for label in classes])
+    size=0
+    for elem in data:
+        size+=1
+    classes_list = []
+    for y in data:
+        classes_list.append(y[column_no])
+    classes = set(classes_list)
+    classes_no = {}
+    for label in classes:
+        classes_no[label] = 0
     j = 1
-    for i in classes:
-        classes_no[i] = j
+    for label in classes:
+        classes_no[label] = j
         j += 1
-    for i in range(size):
+    i=0
+    while i<size:
         data[i][column_no] = classes_no[data[i][column_no]]
+        i+=1
     return data, classes_no
 
 
-# Discard all the column with its column_no in discard_list
-# data: original data set
-# discard_list: a list of column No. of the columns to be discarded
+
 def discard(data, discard_list):
-    size = len(data)
-    length = len(data[0])
+    size=0
+    for elem in data:
+        size+=1
+    length=0
+    for elem in data[0]:
+        length+=1
     data_result = []
-    for i in range(size):
+    i=0
+    while i<size:
         data_result.append([])
-        for j in range(length):
-            if j not in discard_list:
+        j=0
+        while j<length:
+            if j in discard_list:
+                continue
+            else:
                 data_result[i].append(data[i][j])
+            j+=1
+        i+=1
     return data_result
 
 
-# Main method here, see Description in detail
-# data: original data table
-# attribute: a list of the name of attribute
-# value_type: a list identifying the type of each column
-# Returned value: a data table after process
-def pre_process(data, attribute, value_type):
-    column_num = len(data[0])
-    size = len(data)
-    class_column = [x[-1] for x in data]
-    discard_list = []
-    for i in range(0, column_num - 1):
-        data_column = [x[i] for x in data]
 
+def pre_process(data, attribute, value_type):
+    number_of_columns = 0
+    for elem in data[0]:
+        number_of_columns+=1
+    size=0
+    for elem in data:
+        size+=1
+    class_column = []
+    for y in data:
+        class_column.append(y[-1])
+    discarded_values_list = []
+    question_mark = "?"
+    i=0
+    while i < number_of_columns - 1:
+        data_column = []
+        for y in data:
+            data_column.append(y[i])
         # process missing values
-        missing_values_ratio = data_column.count('?') / size
-        if missing_values_ratio > 0.5:
-            discard_list.append(i)
-            continue
-        elif missing_values_ratio > 0:
+        numerator = data_column.count(question_mark)
+        denominator = size
+        ratio_of_missing_values = numerator / denominator
+        if ratio_of_missing_values>0 and ratio_of_missing_values<=0.5:
             data = fill_missing_values(data, i)
-            data_column = [x[i] for x in data]
+            data_column = []
+            for y in data:
+                data_column.append(y[i])
+        elif ratio_of_missing_values > 0.5:
+            discarded_values_list.append(i)
+            continue
+       
+            
 
         # discretization
-        if value_type[i] == 'numerical':
+
+        if value_type[i] == 'categorical':
+            returned_argument_1, returned_argument_2 = replace_categorical(data, i)
+            data = returned_argument_1
+            classes_no = returned_argument_2
+            print(attribute[i] + ":", classes_no)   # print out replacement list
+        elif value_type[i] == 'numerical':
             discretization_data = get_discretization_data(data_column, class_column)
             block = rmep.Block(discretization_data)
             walls = rmep.partition(block)
-            if len(walls) == 0:
-                max_value = max(data_column)
-                min_value = min(data_column)
-                step = (max_value - min_value) / 3
-                walls.append(min_value + step)
-                walls.append(min_value + 2 * step)
+            if len(walls)>0:
+                pass
+            elif len(walls)<0:
+                pass
+            else:
+                minimum_value = min(data_column)
+                maximum_value = max(data_column)
+                first_value = maximum_value
+                second_value = minimum_value
+                num = 3
+                step = (first_value - second_value) / num
+                first_append = minimum_value+step
+                second_append = minimum_value + 2 * step
+                walls.append(first_append)
+                walls.append(second_append)
             print(attribute[i] + ":", walls)        # print out split points
             data = replace_numerical(data, i, walls)
-        elif value_type[i] == 'categorical':
-            data, classes_no = replace_categorical(data, i)
-            print(attribute[i] + ":", classes_no)   # print out replacement list
+        
+        i+=1
 
     # discard
-    if len(discard_list) > 0:
-        data = discard(data, discard_list)
-        print("discard:", discard_list)             # print out discard list
+    if len(discarded_values_list) > 0:
+        data = discard(data, discarded_values_list)
+        print("discard:", discarded_values_list)             # print out discard list
     return data
 
 

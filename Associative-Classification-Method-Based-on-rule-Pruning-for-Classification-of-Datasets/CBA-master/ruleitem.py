@@ -68,19 +68,6 @@ class RuleItem:
             return answer
 
 
-    '''# print out the ruleitem
-    def print(self):
-        cond_set_output = ''
-        index = -2
-
-        for element in self.cond_set:
-            cond_set_output += '(' + str(element) + ', ' + str(self.cond_set[element]) + '), 
-
-        cond_set_output = cond_set_output[:index]
-        print('<({' + cond_set_output + '}, ' + str(self.cond_sup_count) + '), (' +
-              '(class, ' + str(self.class_label) + '), ' + str(self.rule_sup_count) + ')>')'''
-
-    # print out rule
     def print_rule(self):
         temp_index = -2
         cond_set_output = '['
@@ -96,16 +83,3 @@ class RuleItem:
         print(cond_set_output + arrow + '(class_label, ' + label+ closing_bracket)
 
 
-'''# just for test
-if __name__ == '__main__':
-    cond_set = {0: 1, 1: 1}
-    class_label = 1
-    dataset = [[1, 1, 1], [1, 1, 1], [1, 2, 1], [2, 2, 1], [2, 2, 1],
-               [2, 2, 0], [2, 3, 0], [2, 3, 0], [1, 1, 0], [3, 2, 0]]
-    rule_item = RuleItem(cond_set, class_label, dataset)
-    rule_item.print()
-    rule_item.print_rule()
-    print('condsupCount =', rule_item.cond_sup_count)
-    print('rulesupCount =', rule_item.rule_sup_count)
-    print('support =', rule_item.support)
-    print('confidence =', rule_item.confidence)'''

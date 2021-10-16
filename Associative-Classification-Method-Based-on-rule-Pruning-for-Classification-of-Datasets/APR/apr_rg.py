@@ -10,18 +10,19 @@ class FrequentRuleitems:
 
     # get size of set
     def get_size(self):
-        return len(self.frequent_ruleitems_set)
+        counter=0
+        for element in self.frequent_ruleitems_set:
+            counter+=1
+        return counter
 
     # add a new ruleitem into set
-    def add(self, rule_item):
-        is_existed = False
-        for item in self.frequent_ruleitems_set:
-            if item.class_label == rule_item.class_label:
-                if item.cond_set == rule_item.cond_set:
-                    is_existed = True
-                    break
-        if not is_existed:
-            self.frequent_ruleitems_set.add(rule_item)
+    def add(self, new_item):
+        for element in self.frequent_ruleitems_set:
+            if(element.class_label == new_item.class_label and element.cond_set == new_item.cond_set):
+                return
+            else:
+                pass
+        self.frequent_ruleitems_set.add(new_item)
 
     # append set of ruleitems
     def append(self, sets):
@@ -75,24 +76,20 @@ class Car:
             self.rules_list.append(rule_item)
 
     # convert frequent ruleitems into car
-    def gen_rules(self, frequent_ruleitems, minsup, minconf):
+    def gen_rules(self, frequent_ruleitems, minimum_support, minimum_confidence):
         for item in frequent_ruleitems.frequent_ruleitems_set:
-            self._add(item, minsup, minconf)
+            self._add(item, minimum_support, minimum_confidence)
 
     # prune rules
     def prune_rules(self, dataset):
-        for rule in self.rules:
-            pruned_rule = prune(rule, dataset)
-            # print("pruned rule:",pruned_rule.cond_set)
-            is_existed = False
-            for rule in self.pruned_rules:
-                if rule.class_label == pruned_rule.class_label:
-                    if rule.cond_set == pruned_rule.cond_set:
-                        is_existed = True
-                        break
-
-            if not is_existed:
-                self.pruned_rules.add(pruned_rule)
+        for rule1 in self.rules:
+            pruned_rule = prune(rule1, dataset)
+            for rule2 in self.pruned_rules:
+                if(rule2.cond_set == pruned_rule.cond_set and rule2.class_label == pruned_rule.class_label):
+                    return
+                else:
+                    pass
+            self.pruned_rules.add(pruned_rule)
 
     # union new car into rules list
     def append(self, car, minsup, minconf):
@@ -143,83 +140,104 @@ def prune(rule, dataset):
 
 
 # invoked by candidate_gen, join two items to generate candidate
-def join(item1, item2, dataset):
-    if item1.class_label != item2.class_label:
+def join(first_item, second_item, dataset):
+    if first_item.class_label==second_item.class_label:
+        pass
+    elif first_item.class_label != second_item.class_label:
         return None
-    category1 = set(item1.cond_set)
-    category2 = set(item2.cond_set)
-    # print("cat:",category1)
-    if category1 == category2:
+   
+    first_category = set(first_item.cond_set)
+    second_category = set(second_item.cond_set)
+    if first_category != second_category:
+        pass
+    else:
         return None
-    intersect = category1 & category2
-    for item in intersect:
-        if item1.cond_set[item] != item2.cond_set[item]:
-            return None
-    category = category1 | category2
-    new_cond_set = dict()
-    for item in category:
-        if item in category1:
-            # print("cater",category)
-            # print("item:",item)
-            new_cond_set[item] = item1.cond_set[item]
+    intersection_of_first_category_and_second_category = first_category & second_category
+    for element in intersection_of_first_category_and_second_category:
+        if first_item.cond_set[element] == second_item.cond_set[element]:
+            continue
         else:
-            new_cond_set[item] = item2.cond_set[item]
-
-    new_ruleitem = ruleitem.RuleItem(new_cond_set, item1.class_label, dataset)
+            return None
+    final_category = first_category | second_category
+    new_condition_set = dict()
+    for elem in final_category:
+        if elem not in first_category:
+            new_condition_set[elem] = second_item.cond_set[elem]
+        else:
+            new_condition_set[elem] = first_item.cond_set[elem]
+    new_ruleitem = ruleitem.RuleItem(new_condition_set, first_item.class_label, dataset)
     return new_ruleitem
 
 
 # similar to Apriori-gen in algorithm Apriori
-def candidate_gen(frequent_ruleitems, dataset):
+def candidate_gen(recurrent_ruleitems, data):
     returned_frequent_ruleitems = FrequentRuleitems()
-    for item1 in frequent_ruleitems.frequent_ruleitems_set:
-        for item2 in frequent_ruleitems.frequent_ruleitems_set:
-            new_ruleitem = join(item1, item2, dataset)
-            if new_ruleitem:
-                returned_frequent_ruleitems.add(new_ruleitem)
+
+    for rule_item1 in recurrent_ruleitems.frequent_ruleitems_set:
+
+        for rule_item2 in recurrent_ruleitems.frequent_ruleitems_set:
+            new_rule_item = join(rule_item1, rule_item2, data)
+
+            if new_rule_item!=None:
+                returned_frequent_ruleitems.add(new_rule_item)
+
                 if returned_frequent_ruleitems.get_size() >= 1000:      # not allow to store more than 1000 ruleitems
                     return returned_frequent_ruleitems
+
+                else:
+                    pass
+
+            else:
+                continue
+
     return returned_frequent_ruleitems
 
 
 # main method, implementation of CBA-RG algorithm
-def rule_generator(dataset, minsup, minconf):
-    frequent_ruleitems = FrequentRuleitems()
-    car = Car()
+def rule_generator(dataset, minimum_support, minimum_confidence):
+    frequent_rule_items = FrequentRuleitems()
+    classification_association_rule = Car()
+    i=0
+    class_labels_list = []
+    while i<len(dataset):
+        class_labels_list.append(dataset[i][-1])
+        i+=1
+    class_labels_set = set(class_labels_list)
+    col=0
+    while col<len(dataset[0])-1:
+        values_list = []
+        for elem in dataset:
+            values_list.append(elem[col])
+        distinct_values_set = set(values_list)
+        for val in distinct_values_set:
+            condition_set = {col: val}
+            for class_label in class_labels_set:
+                one_rule_item = ruleitem.RuleItem(condition_set, class_label, dataset)
+                if one_rule_item.support < minimum_support:
+                    continue
+                else:
+                    frequent_rule_items.add(one_rule_item)
+        col+=1
+    classification_association_rule.gen_rules(frequent_rule_items, minimum_support, minimum_confidence)
+    classification_association_rules = classification_association_rule
 
-    # get large 1-ruleitems and generate rules
-    class_label = set([x[-1] for x in dataset])
-    for column in range(0, len(dataset[0])-1):
-        distinct_value = set([x[column] for x in dataset])
-        #print("distinct values:",distinct_value)
-        for value in distinct_value:
-            cond_set = {column: value}
-            for classes in class_label:
-                rule_item = ruleitem.RuleItem(cond_set, classes, dataset)
-                if rule_item.support >= minsup:
-                    frequent_ruleitems.add(rule_item)
-
-    car.gen_rules(frequent_ruleitems, minsup, minconf)
-    cars = car
-
-    last_cars_number = 0
-    current_cars_number = len(cars.rules)
-
-    while frequent_ruleitems.get_size() > 0 and current_cars_number <= 1000 :
-        #print("******")
-        candidate = candidate_gen(frequent_ruleitems, dataset)
-        frequent_ruleitems = FrequentRuleitems()
-        car = Car()
-        for item in candidate.frequent_ruleitems_set:
-            if item.support >= minsup:
-                frequent_ruleitems.add(item)
-        car.gen_rules(frequent_ruleitems, minsup, minconf)
-        cars.append(car, minsup, minconf)
-        #cars.prune_rules(dataset)
-        last_cars_number = current_cars_number
-        current_cars_number = len(cars.rules)
-
-    return cars
+    end_classification_association_rules_no = 0
+    present_classification_association_rules_no = len(classification_association_rules.rules)
+    while frequent_rule_items.get_size()>0 and present_classification_association_rules_no<=2000 and (present_classification_association_rules_no-end_classification_association_rules_no)>=10:
+        candidate_Rule = candidate_gen(frequent_rule_items, dataset)
+        frequent_rule_items = FrequentRuleitems()
+        classification_association_rule = Car()
+        for element in candidate_Rule.frequent_ruleitems_set:
+            if element.support<minimum_support:
+                continue
+            else:
+                frequent_rule_items.add(element)
+        classification_association_rule.gen_rules(frequent_rule_items, minimum_support, minimum_confidence)
+        classification_association_rules.append(classification_association_rule, minimum_support, minimum_confidence)
+        end_classification_association_rules_no = present_classification_association_rules_no
+        present_classification_association_rules_no = len(classification_association_rule.rules)
+    
+    return classification_association_rules
 
 
 # just for test

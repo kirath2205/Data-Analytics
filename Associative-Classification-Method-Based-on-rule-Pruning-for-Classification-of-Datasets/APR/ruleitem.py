@@ -4,12 +4,17 @@ import ruleitem
 
 class RuleItem:
 
-    def __init__(self, cond_set, class_label, dataset):
-        self.cond_set = cond_set
-        self.class_label = class_label
-        self.cond_sup_count, self.rule_sup_count = self._get_sup_count(dataset)
-        self.support = self._get_support(len(dataset))
-        self.confidence = self._get_confidence()
+    def __init__(self, condition_set, label, data):
+        self.class_label = label
+        self.cond_set = condition_set
+        temp1 ,temp2 = self._get_sup_count(data)
+        self.rule_sup_count = temp2
+        self.cond_sup_count = temp1
+        len_dataset = len(data)
+        confidence = self._get_confidence()
+        self.confidence = confidence
+        support = self._get_support(len_dataset)
+        self.support = support
 
     def _get_sup_count(self, records):
         initial_value = 0
@@ -78,16 +83,3 @@ class RuleItem:
 
 
 
-# just for test
-if __name__ == '__main__':
-    cond_set = {0: 1, 1: 1}
-    class_label = 1
-    dataset = [[1, 1, 1], [1, 1, 1], [1, 2, 1], [2, 2, 1], [2, 2, 1],
-               [2, 2, 0], [2, 3, 0], [2, 3, 0], [1, 1, 0], [3, 2, 0]]
-    rule_item = ruleitem.RuleItem(cond_set, class_label, dataset)
-    rule_item.print()
-    rule_item.print_rule()
-    print('Condition support count =', rule_item.cond_sup_count)   # should be 3
-    print('rulesupCount =', rule_item.rule_sup_count)   # should be 2
-    print('support =', rule_item.support)               # should be 0.2
-    print('confidence =', rule_item.confidence)         # should be 0.667

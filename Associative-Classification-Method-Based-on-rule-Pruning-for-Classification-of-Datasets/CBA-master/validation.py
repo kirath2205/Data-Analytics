@@ -106,7 +106,7 @@ if __name__ == "__main__":
     test_scheme_path = 'Dataset/iris.names'
 
     # just choose one mode to experiment by removing one line comment and running
-    min_support=0.2
-    min_conf=0.7
+    min_support=0.01
+    min_conf=0.5
     is_class_first=False
     cross_validate(test_data_path, test_scheme_path,is_class_first,min_support,min_conf)

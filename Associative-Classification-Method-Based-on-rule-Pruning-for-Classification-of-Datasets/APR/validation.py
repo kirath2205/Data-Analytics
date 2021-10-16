@@ -158,11 +158,11 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
 
 if __name__ == "__main__":
     # using the relative path, all data sets are stored in datasets directory
-    test_data_path = 'Dataset/ASD.data'
-    test_scheme_path = 'Dataset/ASD.names'
+    test_data_path = 'Dataset/iris.data'
+    test_scheme_path = 'Dataset/iris.names'
 
     # just choose one mode to experiment by removing one line comment and running
-    min_support=0.2
-    min_conf=0.7
+    min_support=0.01
+    min_conf=0.5
     is_class_first=False
     cross_validate_m1_without_prune(test_data_path, test_scheme_path,is_class_first,min_support,min_conf)

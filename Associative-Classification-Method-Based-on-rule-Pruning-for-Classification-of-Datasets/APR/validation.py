@@ -125,7 +125,7 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
 
         start_time = time.time()
         # print("----------")
-        classifier= classifier_builder_m1(cars, training_dataset,minsup,len(training_dataset),u)
+        classifier= classifier_builder_m1(training_dataset,minsup,len(training_dataset),u)
 
 
         end_time = time.time()

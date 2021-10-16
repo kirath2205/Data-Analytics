@@ -1,5 +1,6 @@
 import ruleitem
-
+import sys
+import apr_cb_m1
 
 class FrequentRuleitems:
     """
@@ -99,41 +100,50 @@ class Car:
 
 # try to prune rule
 def prune(rule, dataset):
-    import sys
-    min_rule_error = sys.maxsize
+    
+    minimum_rule_error = sys.maxsize
     pruned_rule = rule
 
     # prune rule recursively
-    def find_prune_rule(this_rule):
-        nonlocal min_rule_error
+    def find_prune_rule(current_rule):
+        nonlocal minimum_rule_error
         nonlocal pruned_rule
 
         # calculate how many errors the rule r make in the dataset
-        def errors_of_rule(r):
-            import apr_cb_m1
+        def errors_of_rule(rule):
+            
+            number_of_errors = 0
+            for single_item in dataset:
+                if apr_cb_m1.is_satisfy(single_item, rule):
+                    continue
+                else:
+                    number_of_errors += 1
+            return number_of_errors
 
-            errors_number = 0
-            for case in dataset:
-                if apr_cb_m1.is_satisfy(case, r) == False:
-                    errors_number += 1
-            return errors_number
-
-        rule_error = errors_of_rule(this_rule)
-        if rule_error < min_rule_error:
+        rule_error = errors_of_rule(current_rule)
+        if rule_error >= minimum_rule_error:
+            pass
+        else:
             min_rule_error = rule_error
-            pruned_rule = this_rule
-        this_rule_cond_set = list(this_rule.cond_set)
-        if len(this_rule_cond_set) >= 2:
+            pruned_rule = current_rule
+        this_rule_cond_set = list(current_rule.cond_set)
+        if len(this_rule_cond_set) < 2:
+            pass
+        else:
             for attribute in this_rule_cond_set:
-                temp_cond_set = dict(this_rule.cond_set)
-                temp_cond_set.pop(attribute)
-                temp_rule = ruleitem.RuleItem(temp_cond_set, this_rule.class_label, dataset)
-                temp_rule_error = errors_of_rule(temp_rule)
-                if temp_rule_error <= min_rule_error:
+                temporary_condition_set = dict(current_rule.cond_set)
+                temporary_condition_set.pop(attribute)
+                temporary_rule = ruleitem.RuleItem(temporary_condition_set, current_rule.class_label, dataset)
+                temp_rule_error = errors_of_rule(temporary_rule)
+                if temp_rule_error > min_rule_error:
+                    pass
+                else:
                     min_rule_error = temp_rule_error
-                    pruned_rule = temp_rule
-                    if len(temp_cond_set) >= 2:
-                        find_prune_rule(temp_rule)
+                    pruned_rule = temporary_rule
+                    if len(temporary_condition_set) < 2:
+                        pass
+                    else:
+                        find_prune_rule(temporary_rule)
 
     find_prune_rule(rule)
     return pruned_rule
@@ -183,7 +193,7 @@ def candidate_gen(recurrent_ruleitems, data):
 
                 if returned_frequent_ruleitems.get_size() >= 1000:      # not allow to store more than 1000 ruleitems
                     return returned_frequent_ruleitems
-
+                    
                 else:
                     pass
 

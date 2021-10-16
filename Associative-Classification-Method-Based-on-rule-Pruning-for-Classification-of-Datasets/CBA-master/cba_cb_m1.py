@@ -193,19 +193,3 @@ def classifier_builder_m1(cars, dataset):
     classifier.drop_rules()
     return classifier
 
-
-if __name__ == '__main__':
-    dataset = [[1, 1, 1,2], [1, 1, 2,2], [2, 1, 2,1], [1, 2, 2,1], [3, 1, 1,1],
-               [1, 1, 1,2], [2, 2, 3,1], [1, 2, 3,1], [1, 2, 2,1], [1, 2, 2,2]]
-    minsup = 0.2
-    minconf = 0.6
-    cars = cba_rg.rule_generator(dataset, minsup, minconf)
-    classifier = classifier_builder_m1(cars, dataset)
-    classifier.print()
-
-    print()
-    dataset = [[1, 1, 1,2], [1, 1, 2,2], [2, 1, 2,1], [1, 2, 2,1], [3, 1, 1,1],
-               [1, 1, 1,2], [2, 2, 3,1], [1, 2, 3,1], [1, 2, 2,1], [1, 2, 2,2]]
-    cars.prune_rules(dataset)
-    cars.rules = cars.pruned_rules
-    classifier = classifier_builder_m1(cars, dataset)

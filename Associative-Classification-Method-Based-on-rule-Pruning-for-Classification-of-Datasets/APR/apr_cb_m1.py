@@ -5,37 +5,20 @@ import sys
 import time
 
 
-def is_satisfy(datacase, rule):
+def is_satisfy(records, item_rule):
 
-    for item in rule.cond_set:
-        # print("item",item)
-        if datacase[item] != rule.cond_set[item]:
-            return None
-    if datacase[-1] == rule.class_label:
-        return True
-    else:
+    for item in item_rule.cond_set:
+        if records[item] == item_rule.cond_set[item]:
+            continue
+        return 
+    last_index = len(records)-1
+    if records[last_index] != item_rule.class_label:
         return False
+    return True
 
-def is_satisfy_1(rule1, rule):
-    # arr=[item for item in rule.cond_set]
-    brr=[item for item in rule1.cond_set]
-
-    for item in rule.cond_set:
-        if item in brr:
-            if rule1.cond_set[item] != rule.cond_set[item]:
-                return None
-        else:
-            return None
-    if rule1.class_label == rule.class_label:
-        return True
-    else:
-        return False
 
 
 class Classifier:
-    """
-    This class is our classifier. The rule_list and default_class are useful for outer code.
-    """
     def __init__(self):
         self.rule_list = list()
         self.default_class = None
@@ -219,62 +202,4 @@ def sort_dict(val):
     # print([x.cond_set for x in rule_list])
     return rule_list
 
-
-# just for test
-if __name__ == '__main__':
-    dataset = [[1, 1, 1,2], [1, 1, 2,2], [2, 1, 2,1], [1, 2, 2,1], [3, 1, 1,1],
-               [1, 1, 1,2], [2, 2, 3,1], [1, 2, 3,1], [1, 2, 2,1], [1, 2, 2,2]]
-    minsup = 0.2
-    minconf = 0.65
-
-    cars = apr_rg.rule_generator(dataset, minsup, minconf)
-    # u=cars.rules_list
-    # print([u[i].cond_set for i in range(len(u))])
-    arr=list(cars.rules_list)
-    max=-1
-
-    for i in range(len(arr)):
-        if len(arr[i].cond_set)>max:
-            max=len(arr[i].cond_set)
-    T=[[] for i in range(max)]
-    for i in range(len(arr)):
-        T[len(arr[i].cond_set)-1].append(arr[i])
-    u=[]
-    for i in range(len(T)):
-        T[i]=sort_dict(T[i])
-
-        for j in T[i]:
-            # print(j.cond_set," ",j.class_label)
-            u.append(j)
-    # print([u[i].cond_set for i in range(len(u))])
-
-    classifier = classifier_builder_m1(cars, dataset,minsup,len(dataset),u)
-    classifier.print()
-
-    print()
-    dataset = [[1, 1, 1,2], [1, 1, 2,2], [2, 1, 2,1], [1, 2, 2,1], [3, 1, 1,1],
-               [1, 1, 1,2], [2, 2, 3,1], [1, 2, 3,1], [1, 2, 2,1], [1, 2, 2,2]]
-    cars.prune_rules(dataset)
-    cars.rules = cars.pruned_rules
-    arr=list(cars.rules_list)
-    max=-1
-
-    for i in range(len(arr)):
-        if len(arr[i].cond_set)>max:
-            max=len(arr[i].cond_set)
-    T=[[] for i in range(max)]
-    for i in range(len(arr)):
-        T[len(arr[i].cond_set)-1].append(arr[i])
-    u=[]
-    for i in range(len(T)):
-        T[i]=sort_dict(T[i])
-
-        for j in T[i]:
-            # print(j.cond_set)
-            u.append(j)
-    # print([u[i].cond_set for i in range(len(u))])
-
-    classifier = classifier_builder_m1(cars, dataset,minsup,len(dataset),u)
-
-    classifier.print()
 

@@ -7,14 +7,12 @@ import time
 def is_satisfy(datacase, rule):
 
     for item in rule.cond_set:
-        # print("item",item)
         if datacase[item] != rule.cond_set[item]:
             return None
     if datacase[-1] == rule.class_label:
         return True
     else:
         return False
-
 
 class Classifier:
 
@@ -77,75 +75,94 @@ class Classifier:
         self.default_class = self._default_class_list[index]
         self._default_class_list = None
 
-    # just print out all selected rules and default class in our classifier
+    # print the default class and rules
     def print(self):
-        for rule in self.rule_list:
-            rule.print_rule()
+        for r in self.rule_list:
+            r.print_rule()
         print("default_class:", self.default_class)
 
-def mergesort(arr):
+def SortRuleList(arr):
 
-    if len(arr)>1:
-        mid=len(arr)//2
-        left=arr[:mid]
-        right=arr[mid:]
-        mergesort(left)
-        mergesort(right)
-        i=0
-        j=0
-        k=0
-        while i<len(left) and j<len(right):
-            a=left[i]
-            b=right[j]
-            # 1. the confidence of ri > rj
-            if a.confidence < b.confidence:
-                arr[k]=right[j]
-                j+=1
+    lenArr = len(arr)
 
-            elif a.confidence == b.confidence:
-                # 2. their confidences are the same, but support of ri > rj
-                if a.support < b.support:
-                    arr[k]=right[j]
-                    j+=1
-                elif a.support == b.support:
-                    # 3. both confidence & support are the same, ri earlier than rj
-                    if len(a.cond_set) < len(b.cond_set):
-                        arr[k]=right[j]
-                        j+=1
+    if lenArr > 1:
+
+        mid = lenArr//2
+
+        right = arr[mid:]
+        left = arr[:mid]
+
+        SortRuleList(right)
+        SortRuleList(left)
+        
+        j = k = i = 0
+
+        while j < len(right) and i < len(left):
+
+            b = right[j]
+            a = left[i]
+
+            conf_a = a.confidence
+            conf_b = b.confidence
+            conf_diff = conf_a - conf_b
+            
+            if conf_diff > 0:
+                arr[k] = left[i]
+                i += 1
+
+            elif conf_diff == 0:
+                sup_a = a.support
+                sup_b = b.support
+                sup_diff = sup_a - sup_b
+
+                if sup_diff > 0:
+                    arr[k] = left[i]
+                    i += 1
+
+                elif sup_diff == 0:
+                    if len(a.cond_set) > len(b.cond_set):
+                        arr[k] = left[i]
+                        i += 1
+                        
                     else:
-                        arr[k]=left[i]
-                        i+=1
+                        arr[k] = right[j]
+                        j += 1
                 else:
-                    arr[k]=left[i]
-                    i+=1
+                    arr[k] = right[j]
+                    j += 1
             else:
-                arr[k]=left[i]
-                i+=1
-            k+=1
-        while i<len(left):
-            arr[k]=left[i]
-            i+=1
-            k+=1
-        while j<len(right):
-            arr[k]=right[j]
-            j+=1
-            k+=1
+                arr[k] = right[j]
+                j += 1
 
-def rule_compare(a, b):
-    if a.confidence < b.confidence:
-        return 1
-    elif a.confidence < b.confidence:
-        if a.support < b.support:
-            return 1
-        elif a.support == b.support:
-            if len(a.cond_set) < len(b.cond_set):
-                return 1
-            else:
-                return -1
-        else:
-            return -1
+            k += 1
+
+        while i < len(left):
+            arr[k] = left[i]
+            k += 1
+            i += 1
+
+        while j < len(right):
+            arr[k] = right[j]
+            k += 1
+            j += 1
     else:
-        return -1
+        pass
+
+# def rule_compare(a, b):
+#     if a.confidence < b.confidence:
+#         return 1
+#     elif a.confidence < b.confidence:
+#         if a.support < b.support:
+#             return 1
+#         elif a.support == b.support:
+#             if len(a.cond_set) < len(b.cond_set):
+#                 return 1
+#             else:
+#                 return -1
+#         else:
+#             return -1
+#     else:
+#         return -1
 
 # following the pseudo code given in KDD paper
 def classifier_builder_m1(cars, dataset):
@@ -155,7 +172,7 @@ def classifier_builder_m1(cars, dataset):
     rule_list = list(cars.rules)
 
     # sorting rules based on the “>” condition
-    mergesort(rule_list)
+    SortRuleList(rule_list)
 
     # rule_list.sort(key=cmp_to_key(rule_compare))
     

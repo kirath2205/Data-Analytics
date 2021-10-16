@@ -67,6 +67,8 @@ def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf
 
         start_time = time.time()
         cars = rule_generator(training_dataset, minsup, minconf)
+        # cars.prune_rules(training_dataset)
+        # cars.rules = cars.pruned_rules
         end_time = time.time()
         cba_rg_runtime = end_time - start_time
         cba_rg_total_runtime += cba_rg_runtime
@@ -102,11 +104,13 @@ def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf
 # test entry goes here
 if __name__ == "__main__":
     # using the relative path, all data sets are stored in datasets directory
-    test_data_path = 'Dsets/iris.data'
-    test_scheme_path = 'Dsets/iris.names'
+    dataset = "horse-colic"
+
+    test_data_path = f'Dsets/{dataset}.data'
+    test_scheme_path = f'Dsets/{dataset}.names'
 
     # just choose one mode to experiment by removing one line comment and running
-    min_support=0.2
-    min_conf=0.7
+    min_support=0.01
+    min_conf=0.5
     is_class_first=False
     cross_validate(test_data_path, test_scheme_path,is_class_first,min_support,min_conf)

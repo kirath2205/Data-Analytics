@@ -7,12 +7,13 @@ import time
 def is_satisfy(datacase, rule):
 
     for item in rule.cond_set:
-        if datacase[item] != rule.cond_set[item]:
-            return None
-    if datacase[-1] == rule.class_label:
-        return True
-    else:
+        if datacase[item] == rule.cond_set[item]:
+            continue
+        return 
+    last_index = len(datacase)-1
+    if datacase[last_index] != rule.class_label:
         return False
+    return True
 
 class Classifier:
 
@@ -95,74 +96,64 @@ def SortRuleList(arr):
         SortRuleList(right)
         SortRuleList(left)
         
-        j = k = i = 0
+        index2 = index3 = index1 = 0
 
-        while j < len(right) and i < len(left):
+        while index2 < len(right) and index1 < len(left):
 
-            b = right[j]
-            a = left[i]
+            a , b = left[index1] , right[index2]
 
-            conf_a = a.confidence
-            conf_b = b.confidence
-            conf_diff = conf_a - conf_b
+            confidence_a = a.confidence
+            confidence_b = b.confidence
+            confidence_difference = confidence_a - confidence_b
             
-            if conf_diff > 0:
-                arr[k] = left[i]
-                i += 1
+            if confidence_difference > 0:
+                index1 += 1
+                arr[index3] = left[index1-1]
+                
 
-            elif conf_diff == 0:
-                sup_a = a.support
-                sup_b = b.support
-                sup_diff = sup_a - sup_b
+            elif confidence_difference == 0:
+                support_a = a.support
+                support_b = b.support
+                support_difference = support_a - support_b
 
-                if sup_diff > 0:
-                    arr[k] = left[i]
-                    i += 1
+                if support_difference > 0:
+                    arr[index3] = left[index1]
+                    index1 += 1
 
-                elif sup_diff == 0:
+                elif support_difference == 0:
                     if len(a.cond_set) > len(b.cond_set):
-                        arr[k] = left[i]
-                        i += 1
+                        index1 += 1
+                        arr[index3] = left[index1-1]
                         
                     else:
-                        arr[k] = right[j]
-                        j += 1
+                        index2 += 1
+                        arr[index3] = right[index2-1]
+
                 else:
-                    arr[k] = right[j]
-                    j += 1
+                    index2 += 1
+                    arr[index3] = right[index2-1]
+                    
             else:
-                arr[k] = right[j]
-                j += 1
+                index2 += 1
+                arr[index3] = right[index2-1]
+                
 
-            k += 1
+            index3 += 1
 
-        while i < len(left):
-            arr[k] = left[i]
-            k += 1
-            i += 1
+        while index1 < len(left):
+            index3 += 1
+            index1 += 1
+            arr[index3-1] = left[index1-1]
+            
 
-        while j < len(right):
-            arr[k] = right[j]
-            k += 1
-            j += 1
+        while index2 < len(right):
+            index3 += 1
+            index2 += 1
+            arr[index3-1] = right[index2-1]
     else:
         pass
 
-# def rule_compare(a, b):
-#     if a.confidence < b.confidence:
-#         return 1
-#     elif a.confidence < b.confidence:
-#         if a.support < b.support:
-#             return 1
-#         elif a.support == b.support:
-#             if len(a.cond_set) < len(b.cond_set):
-#                 return 1
-#             else:
-#                 return -1
-#         else:
-#             return -1
-#     else:
-#         return -1
+
 
 # following the pseudo code given in KDD paper
 def classifier_builder_m1(cars, dataset):
@@ -182,11 +173,11 @@ def classifier_builder_m1(cars, dataset):
         # temporary list to store rule IDs
         temp = []
         marked = False
-        for i in range(len(dataset)):
+        for index1 in range(len(dataset)):
             # checking if the dataset row satisfies the current rule
-            is_satisfy_value = is_satisfy(dataset[i], rule)
+            is_satisfy_value = is_satisfy(dataset[index1], rule)
             if is_satisfy_value is not None:
-                temp.append(i)
+                temp.append(index1)
                 if is_satisfy_value:
                     marked = True
         if marked:

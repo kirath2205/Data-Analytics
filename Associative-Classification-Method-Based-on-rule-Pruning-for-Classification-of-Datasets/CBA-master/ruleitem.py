@@ -14,7 +14,7 @@ class RuleItem:
         support = self._support(len_dataset)
         self.support = support
 
-    # calculate condsupCount and rulesupCount
+    
     def _find_count_for_support(self, records):
         initial_value = 0
         support_count = condition_support = initial_value
@@ -44,14 +44,14 @@ class RuleItem:
             flag = 1
         return condition_support, support_count
 
-    # calculate support count
+  
     def _support(self, size_of_records):
         rule_support_count = self.support_count
         size_of_dataset = size_of_records
         result = rule_support_count / size_of_dataset
         return result
 
-    # calculate confidence
+    
     def _confidence(self):
         condition_support_count = self.condition_support
         rule_support_count = self.support_count

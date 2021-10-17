@@ -2,8 +2,7 @@
 import csv
 
 
-# Read dataset and convert into a list.
-# path: directory of *.data file.
+
 def read_data(path):
     data = []
     with open(path, 'r') as csv_file:
@@ -15,8 +14,7 @@ def read_data(path):
     return data
 
 
-# Read scheme file *.names and write down attributes and value types.
-# path: directory of *.names file.
+
 def read_scheme(path):
     with open(path, 'r') as csv_file:
         reader = csv.reader(csv_file, delimiter=',')
@@ -25,9 +23,7 @@ def read_scheme(path):
     return attributes, value_type
 
 
-# convert string-type value into float-type.
-# data: data list returned by read_data.
-# value_type: list returned by read_scheme.
+
 def str2numerical(data, value_type):
     size = len(data)
     columns = len(data[0])
@@ -38,9 +34,7 @@ def str2numerical(data, value_type):
     return data
 
 
-# Main method in this file, to get data list after processing and scheme list.
-# data_path: tell where *.data file stores.
-# scheme_path: tell where *.names file stores.
+
 def read(data_path, scheme_path):
     data = read_data(data_path)
     attributes, value_type = read_scheme(scheme_path)

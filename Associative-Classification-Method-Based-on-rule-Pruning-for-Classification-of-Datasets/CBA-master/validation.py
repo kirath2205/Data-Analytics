@@ -62,7 +62,6 @@ def cross_validate(data_path, scheme_path,class_first=False, minimum_support=0.0
     cba_cb_total_runtime = 0
     total_car_number = 0
     total_classifier_rule_num = 0
-    error_total_rate = 0
     acc_total=0
     k=0
     while k<len(split_point)-1:

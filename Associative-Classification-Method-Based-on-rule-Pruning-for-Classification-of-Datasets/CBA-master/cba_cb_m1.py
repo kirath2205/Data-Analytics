@@ -21,12 +21,12 @@ class Classifier:
         self._error_list = list()
         self._default_class_list = list()
 
-    # inserting a rule into rule_list
+  
     def insert(self, rule, dataset):
-        # appending the rule to rule list
+        
         self.rule_list.append(rule)
 
-        # setting a default class for current rule
+        
         col = []
         for row in dataset:
             col.append(row[-1])
@@ -39,10 +39,10 @@ class Classifier:
                 current_default = l
         self._default_class_list.append(current_default)
 
-        # calculating the total number of errors of C
+        
         self._calc_error(dataset)
 
-    # calculate the total error
+  
     def _calc_error(self, dataset):
         if len(dataset) <= 0:
             self._error_list.append(sys.maxsize)
@@ -65,16 +65,16 @@ class Classifier:
 
 
     def drop_rules(self):
-        # finding the rule with lowest error rate
+       
         index = self._error_list.index(min(self._error_list))
         self.rule_list = self.rule_list[:(index+1)]
         self._error_list = None
 
-        # assigning the default class
+        
         self.default_class = self._default_class_list[index]
         self._default_class_list = None
 
-    # print the default class and rules
+   
     def print(self):
         for r in self.rule_list:
             r.print_rule()
@@ -153,26 +153,25 @@ def SortRuleList(arr):
 
 
 
-# following the pseudo code given in KDD paper
+
 def classifier_builder_m1(cars, dataset):
     
-    # creating the classifier
+    
     classifier = Classifier()
     rule_list = list(cars.rules)
 
-    # sorting rules based on the “>” condition
+   
     SortRuleList(rule_list)
 
-    # rule_list.sort(key=cmp_to_key(rule_compare))
     
     cars_list=rule_list
 
     for rule in cars_list:
-        # temporary list to store rule IDs
+       
         temp = []
         marked = False
         for index1 in range(len(dataset)):
-            # checking if the dataset row satisfies the current rule
+            
             is_satisfy_value = is_satisfy(dataset[index1], rule)
             if is_satisfy_value is not None:
                 temp.append(index1)
@@ -187,7 +186,6 @@ def classifier_builder_m1(cars, dataset):
             dataset = temp_dataset
             classifier.insert(rule, dataset)
 
-    # dropping all rules after the rule with the lowest error value
     classifier.drop_rules()
     return classifier
 

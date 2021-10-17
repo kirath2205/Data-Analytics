@@ -2,7 +2,6 @@ from read import read
 from pre_processing import pre_process
 from cba_rg import rule_generator
 from cba_cb_m1 import classifier_builder_m1
-from cba_cb_m1 import is_satisfy
 import time
 import random
 

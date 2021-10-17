@@ -1,6 +1,6 @@
 import sys
 sys.path.append('/.../CBA-master')
-import ruleitem
+
 
 class RuleItem:
 

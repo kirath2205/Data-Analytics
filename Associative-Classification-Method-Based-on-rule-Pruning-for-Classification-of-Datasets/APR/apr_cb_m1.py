@@ -1,9 +1,6 @@
 
-import apr_rg
-from functools import cmp_to_key
-import sys
-import time
 
+from functools import cmp_to_key
 
 def is_satisfy(records, item_rule):
 

@@ -1,8 +1,6 @@
 
-import cba_rg
-from functools import cmp_to_key
 import sys
-import time
+
 
 def is_satisfy(datacase, rule):
 

@@ -15,8 +15,8 @@ def acc(apr,test):
         flag1=True
         for j in range(len(apr.rule_list)):
             flag=True
-            for item in apr.rule_list[j].cond_set:
-                if test[i][item]!=apr.rule_list[j].cond_set[item]:
+            for item in apr.rule_list[j].condition_set:
+                if test[i][item]!=apr.rule_list[j].condition_set[item]:
                     flag=False
                     break
             if flag:

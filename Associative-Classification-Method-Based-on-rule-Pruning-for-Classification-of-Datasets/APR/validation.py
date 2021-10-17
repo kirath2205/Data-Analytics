@@ -10,8 +10,8 @@ import random
 
 def sort_dict(val):
     def cmp_dict(a,b):
-        s1=list(a.cond_set.keys())
-        s2=list(b.cond_set.keys())
+        s1=list(a.condition_set.keys())
+        s2=list(b.condition_set.keys())
         # print("s1",s1,"s2",s2)
         for i in range(len(s1)):
             if s1[i]>s2[i]:
@@ -23,7 +23,7 @@ def sort_dict(val):
 
     rule_list = list(val)
     rule_list.sort(key=cmp_to_key(cmp_dict))
-    # print([x.cond_set for x in rule_list])
+    # print([x.condition_set for x in rule_list])
     return rule_list
 
 # calculate the error rate of the classifier on the dataset
@@ -49,8 +49,8 @@ def acc(apr,test):
         flag1=True
         for j in range(len(apr.rule_list)):
             flag=True
-            for item in apr.rule_list[j].cond_set:
-                if test[i][item]!=apr.rule_list[j].cond_set[item]:
+            for item in apr.rule_list[j].condition_set:
+                if test[i][item]!=apr.rule_list[j].condition_set[item]:
                     flag=False
                     break
             if flag:
@@ -109,18 +109,18 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
         max=-1
 
         for i in range(len(arr)):
-            if len(arr[i].cond_set)>max:
-                max=len(arr[i].cond_set)
+            if len(arr[i].condition_set)>max:
+                max=len(arr[i].condition_set)
         T=[[] for i in range(max)]
         for i in range(len(arr)):
-            T[len(arr[i].cond_set)-1].append(arr[i])
+            T[len(arr[i].condition_set)-1].append(arr[i])
         u=[]
         for i in range(len(T)):
             T[i]=sort_dict(T[i])
 
             for j in T[i]:
                 u.append(j)
-        # print([u[i].cond_set for i in range(len(u))])
+        # print([u[i].condition_set for i in range(len(u))])
         apr_rg_total_runtime += apr_rg_runtime
 
         start_time = time.time()

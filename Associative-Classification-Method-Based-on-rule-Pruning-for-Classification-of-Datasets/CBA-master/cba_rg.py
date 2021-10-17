@@ -17,7 +17,7 @@ class FrequentRuleitems:
         is_existed = False
         for item in self.frequent_ruleitems_set:
             if item.class_label == rule_item.class_label:
-                if item.cond_set == rule_item.cond_set:
+                if item.condition_set == rule_item.condition_set:
                     is_existed = True
                     break
         if not is_existed:
@@ -60,12 +60,12 @@ class Car:
             if rule_item in self.rules:
                 return
             for item in self.rules:
-                if item.cond_set == rule_item.cond_set and item.confidence < rule_item.confidence:
-                    # print("---",item.cond_set)
+                if item.condition_set == rule_item.condition_set and item.confidence < rule_item.confidence:
+                    # print("---",item.condition_set)
                     self.rules.remove(item)
                     self.rules.add(rule_item)
                     return
-                elif item.cond_set == rule_item.cond_set and item.confidence >= rule_item.confidence:
+                elif item.condition_set == rule_item.condition_set and item.confidence >= rule_item.confidence:
                     return
             self.rules.add(rule_item)
 
@@ -78,11 +78,11 @@ class Car:
     def prune_rules(self, dataset):
         for rule in self.rules:
             pruned_rule = prune(rule, dataset)
-            # print("pruned rule:",pruned_rule.cond_set)
+            # print("pruned rule:",pruned_rule.condition_set)
             is_existed = False
             for rule in self.pruned_rules:
                 if rule.class_label == pruned_rule.class_label:
-                    if rule.cond_set == pruned_rule.cond_set:
+                    if rule.condition_set == pruned_rule.condition_set:
                         is_existed = True
                         break
 
@@ -120,10 +120,10 @@ def prune(rule, dataset):
         if rule_error < min_rule_error:
             min_rule_error = rule_error
             pruned_rule = this_rule
-        this_rule_cond_set = list(this_rule.cond_set)
+        this_rule_cond_set = list(this_rule.condition_set)
         if len(this_rule_cond_set) >= 2:
             for attribute in this_rule_cond_set:
-                temp_cond_set = dict(this_rule.cond_set)
+                temp_cond_set = dict(this_rule.condition_set)
                 temp_cond_set.pop(attribute)
                 temp_rule = ruleitem.RuleItem(temp_cond_set, this_rule.class_label, dataset)
                 temp_rule_error = errors_of_rule(temp_rule)
@@ -144,15 +144,15 @@ def join(first_item, second_item, dataset):
     elif first_item.class_label != second_item.class_label:
         return None
    
-    first_category = set(first_item.cond_set)
-    second_category = set(second_item.cond_set)
+    first_category = set(first_item.condition_set)
+    second_category = set(second_item.condition_set)
     if first_category != second_category:
         pass
     else:
         return None
     intersection_of_first_category_and_second_category = first_category & second_category
     for element in intersection_of_first_category_and_second_category:
-        if first_item.cond_set[element] == second_item.cond_set[element]:
+        if first_item.condition_set[element] == second_item.condition_set[element]:
             continue
         else:
             return None
@@ -160,9 +160,9 @@ def join(first_item, second_item, dataset):
     new_condition_set = dict()
     for elem in final_category:
         if elem not in first_category:
-            new_condition_set[elem] = second_item.cond_set[elem]
+            new_condition_set[elem] = second_item.condition_set[elem]
         else:
-            new_condition_set[elem] = first_item.cond_set[elem]
+            new_condition_set[elem] = first_item.condition_set[elem]
     new_ruleitem = ruleitem.RuleItem(new_condition_set, first_item.class_label, dataset)
     return new_ruleitem
 

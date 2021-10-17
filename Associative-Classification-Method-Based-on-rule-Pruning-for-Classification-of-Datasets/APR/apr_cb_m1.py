@@ -7,8 +7,8 @@ import time
 
 def is_satisfy(records, item_rule):
 
-    for item in item_rule.cond_set:
-        if records[item] == item_rule.cond_set[item]:
+    for item in item_rule.condition_set:
+        if records[item] == item_rule.condition_set[item]:
             continue
         return 
     last_index = len(records)-1
@@ -17,8 +17,8 @@ def is_satisfy(records, item_rule):
     return True
 
 def cmp_method(item_1, item_2):
-    len1=len(item_1.cond_set)
-    len2=len(item_2.cond_set)
+    len1=len(item_1.condition_set)
+    len2=len(item_2.condition_set)
     if item_1.confidence < item_2.confidence:  
         return 1
     elif item_1.confidence == item_2.confidence:
@@ -91,7 +91,7 @@ def SortRuleList(arr):
                     index1 += 1
 
                 elif support_difference == 0:
-                    if len(a.cond_set) > len(b.cond_set):
+                    if len(a.condition_set) > len(b.condition_set):
                         index1 += 1
                         arr[index3] = left[index1-1]
                         
@@ -156,8 +156,8 @@ def classifier_builder_m1(dataset,min_support,length,cars_list):
 
             temp=list(cars_list)
             for i in range(len(cars_list)):
-                cars_list[i].cond_sup_count, cars_list[i].rule_sup_count = cars_list[i]._get_sup_count(dataset)
-                cars_list[i].confidenc , cars_list[i].support = cars_list[i]._get_confidence() , cars_list[i]._get_support(length)
+                cars_list[i].condition_support, cars_list[i].support_count = cars_list[i]._find_count_for_support(dataset)
+                cars_list[i].confidenc , cars_list[i].support = cars_list[i]._confidence() , cars_list[i]._support(length)
                 if cars_list[i].support<min_support:
                     temp[i]=[]
 
@@ -193,8 +193,8 @@ def classifier_builder_m1(dataset,min_support,length,cars_list):
 
 def sort_dict(val):
     def cmp_dict(a,b):
-        s1=list(a.cond_set.keys())
-        s2=list(b.cond_set.keys())
+        s1=list(a.condition_set.keys())
+        s2=list(b.condition_set.keys())
         for i in range(len(s1)):
             if s1[i]>s2[i]:
                 return 1

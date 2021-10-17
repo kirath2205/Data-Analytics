@@ -6,8 +6,8 @@ import time
 
 def is_satisfy(datacase, rule):
 
-    for item in rule.cond_set:
-        if datacase[item] == rule.cond_set[item]:
+    for item in rule.condition_set:
+        if datacase[item] == rule.condition_set[item]:
             continue
         return 
     last_index = len(datacase)-1
@@ -121,7 +121,7 @@ def SortRuleList(arr):
                     index1 += 1
 
                 elif support_difference == 0:
-                    if len(a.cond_set) > len(b.cond_set):
+                    if len(a.condition_set) > len(b.condition_set):
                         index1 += 1
                         arr[index3] = left[index1-1]
                         

@@ -42,7 +42,6 @@ class Classifier:
     def insert(self, rule):
         self.rule_list.append(rule)
 
-    # just print out all selected rules and default class in our classifier
     def print(self):
         for rule in self.rule_list:
             rule.print_rule()

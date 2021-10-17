@@ -7,41 +7,25 @@ from apr_cb_m1 import is_satisfy
 from functools import cmp_to_key
 import time
 import random
+    
+def cmp_dict(array_1,array_2):
+    partition_1=list(array_1.condition_set.keys())
+    partition_2=list(array_2.condition_set.keys())
+    for i in range(len(partition_1)):
+        if(partition_1[i] == partition_2[i]):
+            return 1
+        elif(partition_1[i]>partition_2[i]):
+            return 1
+        return -1
 
-def sort_dict(val):
-    def cmp_dict(a,b):
-        s1=list(a.condition_set.keys())
-        s2=list(b.condition_set.keys())
-        # print("s1",s1,"s2",s2)
-        for i in range(len(s1)):
-            if s1[i]>s2[i]:
-                return 1
-            elif s1[i]<s2[i]:
-                return -1
-
-        return 1
-
-    rule_list = list(val)
+def sort_dict(elements):
+    rule_list = list(elements)
     rule_list.sort(key=cmp_to_key(cmp_dict))
-    # print([x.condition_set for x in rule_list])
     return rule_list
 
-# calculate the error rate of the classifier on the dataset
-def get_error_rate(classifier, dataset):
-    size = len(dataset)
-    error_number = 0
-    for case in dataset:
-        is_satisfy_value = False
-        for rule in classifier.rule_list:
-            is_satisfy_value = is_satisfy(case, rule)
-            if is_satisfy_value == True:
-                break
-        if is_satisfy_value == False:
-            if classifier.default_class != case[-1]:
-                error_number += 1
-    return error_number / size
 
-def acc(apr,test):
+
+def find_accuracy(apr,test):
     temp=[]
     actual=[x[-1] for x in test]
     count=0
@@ -68,7 +52,6 @@ def acc(apr,test):
     res=count/len(test)
     return res
 
-# 10-fold cross-validations on apr
 def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, minsup=0.1, minconf=0.6):
     data, attributes, value_type = read(data_path, scheme_path)
     if class_first:
@@ -79,7 +62,7 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
         attributes.append(a)
         b=value_type.pop(0)
         value_type.append(b)
-        # print(data[0])
+
     random.shuffle(data)
     dataset = pre_process(data, attributes, value_type)
 
@@ -120,11 +103,10 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
 
             for j in T[i]:
                 u.append(j)
-        # print([u[i].condition_set for i in range(len(u))])
         apr_rg_total_runtime += apr_rg_runtime
 
         start_time = time.time()
-        # print("----------")
+        print("-------------------------------------------------------------------------")
         classifier= classifier_builder_m1(training_dataset,minsup,len(training_dataset),u)
 
 
@@ -133,26 +115,42 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
         apr_cb_total_runtime += apr_cb_runtime
 
         classifier.print()
-        res=acc(classifier,test_dataset)
+        res=find_accuracy(classifier,test_dataset)
         acc_total+=res
-
-        error_rate = get_error_rate(classifier, test_dataset)
-        error_total_rate += error_rate
 
         total_car_number += len(cars.rules)
         total_classifier_rule_num += len(classifier.rule_list)
-
-        print("accuracy:",(res*100))
-        print("No. of CARs : ",len(cars.rules_list))
-        print("apr-RG's run time : s" ,apr_rg_runtime)
-        print("apr-CB run time :  s" ,apr_cb_runtime)
+        print()
+        print("-------------------------------------------------------------------------")
+        print()
         print("No. of rules in classifier of apr: " ,len(classifier.rule_list))
-
-    print("\n Average APR's accuracy :",(acc_total/10*100))
+        print()
+        print("No. of CARs : ",len(cars.rules_list))
+        print()
+        print("accuracy : ", str(round((res*100), 2)),'%')
+        print()
+        print("apr-RG's run time : " ,str(round(apr_rg_runtime, 5)),'seconds')
+        print()
+        print("apr-CB run time :  " ,str(round(apr_cb_runtime, 5)),'seconds')
+        print()
+        print("-------------------------------------------------------------------------")
+    print()
+    print('Average Statistics')
+    print()
+    print("-------------------------------------------------------------------------")
+    print()
     print("Average No. of CARs : ",(total_car_number / 10))
-    print("Average apr-RG's run time : " ,(apr_rg_total_runtime / 10))
-    print("Average apr-CB run time :  " ,(apr_cb_total_runtime / 10))
+    print()
     print("Average No. of rules in classifier of apr: " ,(total_classifier_rule_num / 10))
+    print()
+    print("accuracy : ", str(round((acc_total/10*100), 2)),'%')
+    print()
+    print("Average apr-RG's run time : " ,str(round((apr_rg_total_runtime / 10), 5)),'seconds')
+    print()
+    print("Average apr-CB run time :  " , str(round((apr_cb_total_runtime / 10), 5)),'seconds')
+    print()
+
+    print("-------------------------------------------------------------------------")
 
 
 

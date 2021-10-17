@@ -187,6 +187,7 @@ def classifier_builder_m1(dataset,min_support,length,cars_list):
         classifier.default_class=choice
 
     return classifier
+
 def cmp_dict(array_1,array_2):
     partition_1=list(array_1.condition_set.keys())
     partition_2=list(array_2.condition_set.keys())
@@ -197,8 +198,8 @@ def cmp_dict(array_1,array_2):
             return 1
         return -1
 
-def sort_dict(val):
-    rule_list = list(val)
+def sort_dict(elements):
+    rule_list = list(elements)
     rule_list.sort(key=cmp_to_key(cmp_dict))
     return rule_list
 

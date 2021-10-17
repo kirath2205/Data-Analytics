@@ -66,7 +66,6 @@ class RuleItem:
         elif(condition_support_count != initial_value):
             return answer
 
-    # print out rule
     def print_rule(self):
         temp_index = -2
         cond_set_output = '['

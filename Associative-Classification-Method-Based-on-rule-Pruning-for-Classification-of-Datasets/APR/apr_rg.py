@@ -8,14 +8,12 @@ class FrequentRuleitems:
     def __init__(self):
         self.frequent_ruleitems_set = set()
 
-    # get size of set
     def get_size(self):
         counter=0
         for element in self.frequent_ruleitems_set:
             counter+=1
         return counter
 
-    # add a new ruleitem into set
     def add(self, new_item):
         for element in self.frequent_ruleitems_set:
             if(element.class_label == new_item.class_label and element.condition_set == new_item.condition_set):
@@ -24,46 +22,36 @@ class FrequentRuleitems:
                 pass
         self.frequent_ruleitems_set.add(new_item)
 
-    # append set of ruleitems
     def append(self, sets):
         for item in sets.frequent_ruleitems:
             self.add(item)
 
-    # print out all frequent ruleitems
     def print(self):
         for item in self.frequent_ruleitems_set:
             item.print()
 
 
 class Car:
-    """
-    Class Association Rules (Car). If some ruleitems has the same condset, the ruleitem with the highest confidence is
-    chosen as the Possible Rule (PR). If there're more than one ruleitem with the same highest confidence, we randomly
-    select one ruleitem.
-    """
+
     def __init__(self):
         self.rules = set()
         self.rules_list=[]
         self.pruned_rules = set()
 
-    # print out all rules
     def print_rule(self):
         for item in self.rules:
             item.print_rule()
 
-    # print out all pruned rules
     def print_pruned_rule(self):
         for item in self.pruned_rules:
             item.print_rule()
 
-    # add a new rule (frequent & accurate), save the ruleitem with the highest confidence when having the same condset
     def _add(self, rule_item, minsup, minconf):
         if rule_item.support >= minsup and rule_item.confidence >= minconf:
             if rule_item in self.rules:
                 return
             for item in self.rules:
                 if item.condition_set == rule_item.condition_set and item.confidence < rule_item.confidence:
-                    # print("---",item.condition_set)
                     self.rules.remove(item)
                     self.rules.add(rule_item)
 
@@ -75,12 +63,10 @@ class Car:
             self.rules.add(rule_item)
             self.rules_list.append(rule_item)
 
-    # convert frequent ruleitems into car
     def gen_rules(self, frequent_ruleitems, minimum_support, minimum_confidence):
         for item in frequent_ruleitems.frequent_ruleitems_set:
             self._add(item, minimum_support, minimum_confidence)
 
-    # prune rules
     def prune_rules(self, dataset):
         for rule1 in self.rules:
             pruned_rule = prune(rule1, dataset)
@@ -91,24 +77,21 @@ class Car:
                     pass
             self.pruned_rules.add(pruned_rule)
 
-    # union new car into rules list
+
     def append(self, car, minsup, minconf):
         for item in car.rules:
             self._add(item, minsup, minconf)
 
 
-# try to prune rule
 def prune(rule, dataset):
     import sys
     min_rule_error = sys.maxsize
     pruned_rule = rule
 
-    # prune rule recursively
     def find_prune_rule(this_rule):
         nonlocal min_rule_error
         nonlocal pruned_rule
 
-        # calculate how many errors the rule r make in the dataset
         def errors_of_rule(r):
             import apr_cb_m1
 
@@ -139,7 +122,6 @@ def prune(rule, dataset):
     return pruned_rule
 
 
-# invoked by candidate_gen, join two items to generate candidate
 def join(first_item, second_item, dataset):
     if first_item.class_label==second_item.class_label:
         pass
@@ -169,7 +151,6 @@ def join(first_item, second_item, dataset):
     return new_ruleitem
 
 
-# similar to Apriori-gen in algorithm Apriori
 def candidate_gen(recurrent_ruleitems, data):
     returned_frequent_ruleitems = FrequentRuleitems()
 
@@ -181,7 +162,7 @@ def candidate_gen(recurrent_ruleitems, data):
             if new_rule_item!=None:
                 returned_frequent_ruleitems.add(new_rule_item)
 
-                if returned_frequent_ruleitems.get_size() >= 1000:      # not allow to store more than 1000 ruleitems
+                if returned_frequent_ruleitems.get_size() >= 1000:      
                     return returned_frequent_ruleitems
 
                 else:
@@ -193,7 +174,6 @@ def candidate_gen(recurrent_ruleitems, data):
     return returned_frequent_ruleitems
 
 
-# main method, implementation of CBA-RG algorithm
 def rule_generator(dataset, minimum_support, minimum_confidence):
     frequent_rule_items = FrequentRuleitems()
     classification_association_rule = Car()

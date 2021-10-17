@@ -1,22 +1,20 @@
 
 import rmep
 
-
-
 def get_mode(arr):
     mode = []
     arr_appear = {}
     for elem in arr:
-        arr_appear[elem] = arr.count(elem)  # count appearance times of each key
-    if max(arr_appear.values()) != 1:       # if max time is 1
-        for key in arr_appear.keys():     # else, mode is the number which has max time
+        arr_appear[elem] = arr.count(elem)  
+    if max(arr_appear.values()) != 1:       
+        for key in arr_appear.keys():     
             if arr_appear[key] != max(arr_appear.values()):
                 continue
             elif arr_appear[key] == max(arr_appear.values()):
                 mode.append(key)
     else:
-        return      # no mode here 
-    return mode[0]  # return first number if has many modes
+        return      
+    return mode[0]  
 
 
 
@@ -147,7 +145,6 @@ def pre_process(data, attribute, value_type):
         data_column = []
         for y in data:
             data_column.append(y[i])
-        # process missing values
         numerator = data_column.count(question_mark)
         denominator = size
         ratio_of_missing_values = numerator / denominator
@@ -168,7 +165,7 @@ def pre_process(data, attribute, value_type):
             returned_argument_1, returned_argument_2 = replace_categorical(data, i)
             data = returned_argument_1
             classes_no = returned_argument_2
-            print(attribute[i] + ":", classes_no)   # print out replacement list
+            print(attribute[i] + ":", classes_no)   
         elif value_type[i] == 'numerical':
             discretization_data = get_discretization_data(data_column, class_column)
             block = rmep.Block(discretization_data)
@@ -188,15 +185,13 @@ def pre_process(data, attribute, value_type):
                 second_append = minimum_value + 2 * step
                 walls.append(first_append)
                 walls.append(second_append)
-            print(attribute[i] + ":", walls)        # print out split points
+            print(attribute[i] + ":", walls)        
             data = replace_numerical(data, i, walls)
         
         i+=1
-
-    # discard
     if len(discarded_values_list) > 0:
         data = discard(data, discarded_values_list)
-        print("discard:", discarded_values_list)             # print out discard list
+        print("discard:", discarded_values_list)            
     return data
 
 

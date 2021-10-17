@@ -34,22 +34,28 @@ def acc(apr,test):
     return res
 
 # 10-fold cross-validations on CBA
-def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf=0.6):
+def cross_validate(data_path, scheme_path,class_first=False, minimum_support=0.01, minimum_confidence=0.5):
     data, attributes, value_type = read(data_path, scheme_path)
-    if class_first:
-        for i in range(len(data)):
+    if not class_first:
+        pass
+    else:
+        i=0
+        while i<len(data):
             a=data[i].pop(0)
             data[i].append(a)
-        a=attributes.pop(0)
-        attributes.append(a)
-        b=value_type.pop(0)
-        value_type.append(b)
+            i+=1
+        popped_attribute=attributes.pop(0)
+        attributes.append(popped_attribute)
+        popped_value=value_type.pop(0)
+        value_type.append(popped_value)
         # print(data[0])
     random.shuffle(data)
     dataset = pre_process(data, attributes, value_type)
 
-    block_size = int(len(dataset) / 10)
-    split_point = [k * block_size for k in range(0, 10)]
+    block_size = len(dataset) // 10
+    split_point = []
+    for i in range(10):
+        split_point.append(i*block_size)
     split_point.append(len(dataset))
 
     cba_rg_total_runtime = 0
@@ -58,16 +64,16 @@ def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf
     total_classifier_rule_num = 0
     error_total_rate = 0
     acc_total=0
-    for k in range(len(split_point)-1):
+    k=0
+    while k<len(split_point)-1:
         print("\nRound %d:" % k)
+        print("\n")
 
         training_dataset = dataset[:split_point[k]] + dataset[split_point[k+1]:]
         test_dataset = dataset[split_point[k]:split_point[k+1]]
 
         start_time = time.time()
-        cars = rule_generator(training_dataset, minsup, minconf)
-        # cars.prune_rules(training_dataset)
-        # cars.rules = cars.pruned_rules
+        cars = rule_generator(training_dataset, minimum_support, minimum_confidence)
         end_time = time.time()
         cba_rg_runtime = end_time - start_time
         cba_rg_total_runtime += cba_rg_runtime
@@ -84,17 +90,28 @@ def cross_validate(data_path, scheme_path,class_first=False, minsup=0.1, minconf
 
         total_car_number += len(cars.rules)
         total_classifier_rule_num += len(classifier.rule_list)
-
-        print("accuracy :",(res*100))
-        print("No. of CARs : ",len(cars.rules))
+        print("********************************************************************")
+        print("Accuracy :",(res*100))
+       
+        print("Number of CARs : ",len(cars.rules))
+        
         print("CBA-RG's run time : s" ,cba_rg_runtime)
+        
         print("CBA-CB M1's run time :  s" ,cba_cb_runtime)
+        
         print("No. of rules in classifier of CBA-CB: " ,len(classifier.rule_list))
+        print("********************************************************************")
+        print("\n")
+        k+=1
 
-    print("\n Average CBA's accuracy :",(acc_total/10*100))
-    print("Average No. of CARs : ",(total_car_number / 10))
+    print("\n Average CBA accuracy :",(acc_total/10*100))
+   
+    print("Average Number of CARs : ",(total_car_number / 10))
+    
     print("Average CBA-RG's run time: " ,(cba_rg_total_runtime / 10))
+    
     print("Average CBA-CB run time:  " ,(cba_cb_total_runtime / 10))
+    
     print("Average No. of rules in classifier of CBA-CB: " ,(total_classifier_rule_num / 10))
 
 

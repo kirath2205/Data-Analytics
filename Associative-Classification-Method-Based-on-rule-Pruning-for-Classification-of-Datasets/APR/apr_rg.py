@@ -240,32 +240,3 @@ def rule_generator(dataset, minimum_support, minimum_confidence):
     return classification_association_rules
 
 
-# just for test
-if __name__ == "__main__":
-    dataset = [[1, 1, 1], [1, 1, 1], [1, 2, 1], [2, 2, 1], [2, 2, 1],
-               [2, 2, 0], [2, 3, 0], [2, 3, 0], [1, 1, 0], [3, 2, 0]]
-    minsup = 0.15
-    minconf = 0.6
-    cars = rule_generator(dataset, minsup, minconf)
-
-    print("CARs:")
-    cars.print_rule()
-
-    print("prCARs:")
-    cars.prune_rules(dataset)
-    cars.print_pruned_rule()
-
-
-    dataset = [[1, 1, 1,2], [1, 1, 2,2], [2, 1, 2,1], [1, 2, 2,1], [3, 1, 1,1],
-               [1, 1, 1,2], [2, 2, 3,1], [1, 2, 3,1], [1, 2, 2,1], [1, 2, 2,2]]
-    minsup = 0.2
-    minconf = 0.65
-    cars = rule_generator(dataset, minsup, minconf)
-
-    print("CARs:")
-    cars.print_rule()
-
-
-    print("prCARs:")
-    cars.prune_rules(dataset)
-    cars.print_pruned_rule()

@@ -200,21 +200,4 @@ def pre_process(data, attribute, value_type):
     return data
 
 
-# just for test
-if __name__ == '__main__':
-    test_data = [
-        ['red', 25.6, 56, 1],
-        ['green', 33.3, 1, 1],
-        ['green', 2.5, 23, 0],
-        ['blue', 67.2, 111, 1],
-        ['red', 29.0, 34, 0],
-        ['yellow', 99.5, 78, 1],
-        ['yellow', 10.2, 23, 1],
-        ['yellow', 9.9, 30, 0],
-        ['blue', 67.0, 47, 0],
-        ['red', 41.8, 99, 1]
-    ]
-    test_attribute = ['color', 'average', 'age', 'class']
-    test_value_type = ['categorical', 'numerical', 'numerical', 'label']
-    test_data_after = pre_process(test_data, test_attribute, test_value_type)
-    print(test_data_after)
+

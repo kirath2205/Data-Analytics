@@ -48,21 +48,3 @@ def read(data_path, scheme_path):
     return data, attributes, value_type
 
 
-# just for test
-if __name__ == '__main__':
-    import pre_processing
-
-    test_data_path = 'zoo.data'
-    test_scheme_path = 'zoo.names'
-    test_data, test_attributes, test_value_type = read(test_data_path, test_scheme_path)
-
-    # for i in range(len(test_data)):
-    #     a=test_data[i].pop(0)
-    #     test_data[i].append(a)
-    # a=test_attributes.pop(0)
-    # test_attributes.append(a)
-    # b=test_value_type.pop(0)
-    # test_value_type.append(b)
-    # print(test_data[0])
-    result_data = pre_processing.pre_process(test_data, test_attributes, test_value_type)
-    print(result_data)

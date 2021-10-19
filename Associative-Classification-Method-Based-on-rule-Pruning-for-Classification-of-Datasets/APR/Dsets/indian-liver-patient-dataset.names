@@ -1,2 +1,0 @@
-Age,Gender,TB,DB,Alkphos,Sgpt,Sgot,TP,ALB,A/G Ratio,class
-numerical,categorical,numerical,numerical,numerical,numerical,numerical,numerical,numerical,numerical,label

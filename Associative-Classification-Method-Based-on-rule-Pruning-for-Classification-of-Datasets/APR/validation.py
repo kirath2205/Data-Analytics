@@ -155,8 +155,10 @@ def cross_validate_m1_without_prune(data_path, scheme_path,class_first=False, mi
 
 
 if __name__ == "__main__":
-    test_data_path = 'Dataset/iris.data'
-    test_scheme_path = 'Dataset/iris.names'
+    dataset = "transfusion"
+
+    test_data_path = f'Dataset/{dataset}.data'
+    test_scheme_path = f'Dataset/{dataset}.names'
     min_support=0.01
     min_conf=0.5
     is_class_first=False

@@ -1,2 +1,0 @@
-Class,age,menopause,tumor-size,inv-nodes,node-caps,deg-malig,breast,breast-quad,irradiat
-label,categorical,categorical,categorical,categorical,categorical,numerical,categorical,categorical,categorical

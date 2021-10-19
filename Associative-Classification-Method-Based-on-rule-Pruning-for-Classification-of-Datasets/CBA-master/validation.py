@@ -89,6 +89,7 @@ def cross_validate(data_path, scheme_path,class_first=False, minimum_support=0.0
 
         total_car_number += len(cars.rules)
         total_classifier_rule_num += len(classifier.rule_list)
+        print()
         print("********************************************************************")
         print("Accuracy :",(res*100))
        
@@ -100,10 +101,10 @@ def cross_validate(data_path, scheme_path,class_first=False, minimum_support=0.0
         
         print("No. of rules in classifier of CBA-CB: " ,len(classifier.rule_list))
         print("********************************************************************")
-        print("\n")
+        print()
         k+=1
 
-    print("\n Average CBA accuracy :",(acc_total/10*100))
+    print("Average CBA accuracy :",(acc_total/10*100))
    
     print("Average Number of CARs : ",(total_car_number / 10))
     
@@ -113,18 +114,15 @@ def cross_validate(data_path, scheme_path,class_first=False, minimum_support=0.0
     
     print("Average No. of rules in classifier of CBA-CB: " ,(total_classifier_rule_num / 10))
 
-
-
+    print()
 
 # test entry goes here
 if __name__ == "__main__":
-    # using the relative path, all data sets are stored in datasets directory
     dataset = "iris"
 
-    test_data_path = f'Dsets/{dataset}.data'
-    test_scheme_path = f'Dsets/{dataset}.names'
+    test_data_path = f'Dataset/{dataset}.data'
+    test_scheme_path = f'Dataset/{dataset}.names'
 
-    # just choose one mode to experiment by removing one line comment and running
     min_support=0.01
     min_conf=0.5
     is_class_first=False
